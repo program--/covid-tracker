@@ -1,0 +1,26 @@
+{
+    "id": "3CF8613B",
+    "path": "~/covid/index.Rmd",
+    "project_path": "index.Rmd",
+    "type": "r_markdown",
+    "hash": "1401270482",
+    "contents": "",
+    "dirty": false,
+    "created": 1597989067738.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "tempName": "Untitled1",
+        "cursorPosition": "80,16",
+        "scrollLine": "72",
+        "last_setup_crc32": "549491D38f50d753"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1597999170,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1597999170167,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,6 @@
+"0","knitr::opts_chunk$set(echo = TRUE)"
+"0","library(tidyverse)"
+"0","library(USAboundaries)"
+"0","library(knitr)"
+"0","library(sf)"
+"0","library(shiny)"

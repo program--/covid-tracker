@@ -1,0 +1,14 @@
+"0","us_states() %>%
+  st_transform(5070) ->
+  states
+
+us_counties() %>%
+  st_transform(5070) ->
+  counties
+
+us_cities() %>%
+  st_transform(5070) ->
+  cities
+"
+"2","City populations for contemporary data come from the 2010 census.
+"
