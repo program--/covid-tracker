@@ -1,5 +1,6 @@
 library(tidyverse)
 library(USAboundaries)
+library(USAboundariesData)
 library(sf)
 library(shiny)
 library(viridis)
@@ -50,7 +51,7 @@ counties <- USAboundaries::us_counties() %>%
 
 population_dir = "data/PopulationEstimates.xls"
 population_estimates <- readxl::read_excel(population_dir)
-names(population_estimates) <- population_estimates[2, ] # Set headers
+population_estimates <- setNames(population_estimates, population_estimates[2, ]) # Set headers
 population_estimates <- population_estimates[-c(1:2), ] # Remove first two rows
 state_list <- data.frame(
   State_Full = state.name,
@@ -139,4 +140,4 @@ server <- function(input, output) {
   })
 }
 
-shinyApp(ui = ui, server = server, options = list(height = 1080))
+runApp(shinyApp(ui = ui, server = server, options = list(height = 1080)))
