@@ -32,50 +32,6 @@ theme_map <- function(...) {
     )
 }
 
-# Getting USA data
-states <- USAboundaries::us_states() %>%
-  st_transform(5070)
-
-usa_outline <- states %>%
-  st_union() %>%
-  st_cast("MULTILINESTRING")
-
-url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
-covid <- read_csv(url)
-
-counties <- USAboundaries::us_counties() %>%
-  select(name, state_name, geometry) %>%
-  right_join(covid,
-             by = c("name" = "county", "state_name" = "state")) %>%
-  st_transform(5070)
-
-population_dir = "data/PopulationEstimates.xls"
-population_estimates <- readxl::read_excel(population_dir)
-population_estimates <- setNames(population_estimates, population_estimates[2, ]) # Set headers
-population_estimates <- population_estimates[-c(1:2), ] # Remove first two rows
-state_list <- data.frame(
-  State_Full = state.name,
-  State = state.abb
-)
-population_estimates <- population_estimates %>%
-  mutate(Area_Name = str_remove_all(Area_Name, regex(".County"))) %>%
-  left_join(state_list, by = "State")
-
-counties_with_pop <- population_estimates %>%
-  select(State_Full, Area_Name, POP_ESTIMATE_2019, POP_ESTIMATE_2018) %>%
-  setNames(c("state_name",
-    "name",
-    "population_estimate_2019",
-    "population_estimate_2018")) %>%
-  right_join(counties, by = c("state_name", "name")) %>%
-  # Use 2019 estimates; if returns NA, then use 2018 estimates.
-  mutate(
-    cases_per_capita = if_else(
-      is.na(cases / as.double(population_estimate_2019)),
-      cases / as.double(population_estimate_2019),
-      cases / as.double(population_estimate_2018))) %>%
-  st_as_sf()
-
 # Shiny Code
 ui <- fluidPage(
   titlePanel("COVID-19 Tracker"),
@@ -89,9 +45,6 @@ ui <- fluidPage(
       dateInput("dateIn",
                 h3("Date"),
                 label = "Choose a date",
-                value = as.Date(max(covid$date), format = "%Y-%m-%d"),
-                min = as.Date(min(covid$date), format = "%Y-%m-%d"),
-                max = as.Date(max(covid$date), format = "%Y-%m-%d"),
                 format = "yyyy-mm-dd"
       ),
 
@@ -105,6 +58,9 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
+
+  source("load_data.R", local = TRUE)
+
   state_input <- reactive({
     filter(states, name == input$stateIn)
   })
@@ -140,4 +96,4 @@ server <- function(input, output) {
   })
 }
 
-runApp(shinyApp(ui = ui, server = server, options = list(height = 1080)))
+shinyApp(ui = ui, server = server, options = list(height = 1080))
