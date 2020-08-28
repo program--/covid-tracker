@@ -1,3 +1,40 @@
+library(tidyverse)
+library(sf)
+library(viridis)
+library(readxl)
+library(showtext)
+library(USAboundaries)
+library(USAboundariesData)
+
+# Map theme edited from:
+# https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
+font_add_google("Ubuntu")
+theme_map <- function(...) {
+    theme_minimal() +
+        theme(
+            text = element_text(family = "Ubuntu", color = "#22211d"),
+            axis.line = element_blank(),
+            axis.text.x = element_blank(),
+            axis.text.y = element_blank(),
+            axis.ticks = element_blank(),
+            axis.title.x = element_blank(),
+            axis.title.y = element_blank(),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            plot.background = element_blank(),
+            plot.title = element_text(
+                hjust = 0.5,
+                color = "#4e4d47",
+                size = 24
+            ),
+            panel.background = element_blank(),
+            legend.background = element_rect(fill = "#f5f5f2", color = NA),
+            legend.position = "bottom",
+            panel.border = element_blank(),
+            ...
+        )
+}
+
 withProgress(message = "Processing Data", value = 0, {
     n <- 5
 
