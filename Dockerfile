@@ -2,9 +2,6 @@ FROM rocker/geospatial
 
 ENV PORT=8080
 
-# install shiny
-RUN /usr/bin/R --no-save --quiet --slave -e "install.packages('shiny', clean=TRUE, quiet=TRUE, verbose=FALSE)"
-
 # on build, copy application files
 ONBUILD COPY . /app
 
