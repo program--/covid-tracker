@@ -1,53 +1,65 @@
-FROM rocker/geospatial
-
-RUN apt-get update && apt-get install -y \
-    sudo \
-    gdebi-core \
-    pandoc \
-    pandoc-citeproc \
-    libcurl4-gnutls-dev \
-    libcairo2-dev \
-    libxt-dev \
-    xtail \
-    wget
+FROM virtualstaticvoid/heroku-docker-r:shiny
 
 
-# Download and install shiny server
-RUN wget --no-verbose https://download3.rstudio.org/ubuntu-14.04/x86_64/VERSION -O "version.txt" && \
-    VERSION=$(cat version.txt)  && \
-    wget --no-verbose "https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-$VERSION-amd64.deb" -O ss-latest.deb && \
-    gdebi -n ss-latest.deb && \
-    rm -f version.txt ss-latest.deb && \
-    . /etc/environment && \
-    R -e "install.packages(c('shiny', 'rmarkdown'), repos='$MRAN')" && \
-    cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/ && \
-    chown shiny:shiny /var/lib/shiny-server
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    lbzip2 \
+    libfftw3-dev \
+    libgdal-dev \
+    libgeos-dev \
+    libgsl0-dev \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    libhdf4-alt-dev \
+    libhdf5-dev \
+    libjq-dev \
+    liblwgeom-dev \
+    libpq-dev \
+    libproj-dev \
+    libprotobuf-dev \
+    libnetcdf-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    libudunits2-dev \
+    netcdf-bin \
+    postgis \
+    protobuf-compiler \
+    sqlite3 \
+    tk-dev \
+    unixodbc-dev
 
-EXPOSE 8080
+RUN wget https://raw.githubusercontent.com/eddelbuettel/littler/master/inst/examples/install2.r
 
-COPY shiny-server.sh /usr/bin/shiny-server.sh
+RUN install2.r --error \
+    RColorBrewer \
+    RandomFields \
+    RNetCDF \
+    classInt \
+    deldir \
+    gstat \
+    hdf5r \
+    lidR \
+    mapdata \
+    maptools \
+    mapview \
+    ncdf4 \
+    proj4 \
+    raster \
+    rgdal \
+    rgeos \
+    rlas \
+    sf \
+    sp \
+    spacetime \
+    spatstat \
+    spdep \
+    geoR \
+    geosphere \
+    tidyverse \
 
-# on build, copy application files
-ONBUILD COPY . /app
-
-# on build, for installing additional dependencies etc.
-ONBUILD RUN if [ -f "/app/onbuild" ]; then bash /app/onbuild; fi;
-
-# on build, for backward compatibility, look for /app/Aptfile and if it exists, install the packages contained
-ONBUILD RUN if [ -f "/app/Aptfile" ]; then apt-get update -q && cat Aptfile | xargs apt-get -qy install && rm -rf /var/lib/apt/lists/*; fi;
-
-# on build, for backward compatibility, look for /app/init.R and if it exists, execute it
-ONBUILD RUN if [ -f "/app/init.R" ]; then /usr/bin/R --no-init-file --no-save --quiet --slave -f /app/init.R; fi;
-
-# on build, packrat restore packages
-# NOTE: packrat itself is packaged in this same structure so will be bootstrapped here
-ONBUILD RUN if [ -f "/app/packrat/init.R" ]; then /usr/bin/R --no-init-file --no-save --quiet --slave -f /app/packrat/init.R --args --bootstrap-packrat; fi;
-
-# on build, renv restore packages
-ONBUILD RUN if [ -f "/app/renv/activate.R" ]; then /usr/bin/R --no-save --quiet --slave -e 'renv::restore()'; fi;
+# fix proj issue on singularity  
+RUN echo 'PROJ_LIB=/usr/share/proj/' >> /usr/lib/R/etc/Renviron
 
 ENV PORT=8080
-
-# CMD ["/usr/bin/shiny-server.sh"]
 CMD ["/usr/bin/R", "--no-save", "--gui-none", "-f", "/app/run.R"]
 
