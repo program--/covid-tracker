@@ -25,10 +25,6 @@ counties <- rjson::fromJSON(file = "https://raw.githubusercontent.com/plotly/dat
 max_date <- max(readRDS("data/counties_with_pop.rds")$Date)
 
 app <- Dash$new(
-    server = fiery::Fire$new(
-        host = "0.0.0.0",
-        port = 17550
-    ),
     external_stylesheets = list(
         dbcThemes$COSMO,
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
