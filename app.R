@@ -260,7 +260,7 @@ app$callback(
     output = list(id = "updated", property = "children"),
     params = list(input(id = "update-data", property = "n_intervals")),
     function(n_int) {
-        if (max_date != Sys.Date() - 1) {
+        if (max_date != Sys.Date() - 1 & max_date != Sys.Date()) {
             write_covid()
         }
 
