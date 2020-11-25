@@ -28,8 +28,7 @@ app <- Dash$new(
     external_stylesheets = list(
         dbcThemes$COSMO,
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-    ),
-    serve_locally = FALSE
+    )
 )
 
 app$title("COVID-19 Information")
@@ -416,4 +415,4 @@ app$callback(
 )
 
 
-app$run_server(host = '0.0.0.0', port = Sys.getenv('PORT', 8050))
+app$run_server(host = '0.0.0.0', port = Sys.getenv('PORT', 8050), serve_locally = FALSE)
