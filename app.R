@@ -260,11 +260,14 @@ app$callback(
     output = list(id = "updated", property = "children"),
     params = list(input(id = "update-data", property = "n_intervals")),
     function(n_int) {
-        if (max_date != Sys.Date() - 1 & max_date != Sys.Date()) {
+        temp_date <- max(readRDS("data/counties_with_pop.rds")$Date)
+
+        if (temp_date != Sys.Date() - 1 & temp_data != Sys.Date()) {
             write_covid()
+            temp_date <- Sys.Date()
         }
 
-        return(paste0("Updated: ", as.character(Sys.Date())))
+        return(paste0("Updated: ", as.character(temp_date)))
     }
 )
 

@@ -60,7 +60,12 @@ write_pop_dataset <- function() {
 }
 
 write_covid <- function() {
-    url <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
+    url <- dplyr::if_else(
+               file.exists("data/us-counties.csv"),
+               "data/us-counties.csv",
+               "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
+           )
+
     covid <- readr::read_csv(url)
 
     counties <- us_counties_covid(covid)
