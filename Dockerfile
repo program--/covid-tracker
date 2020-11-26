@@ -10,6 +10,7 @@ RUN git clone https://github.com/program--/covid-tracker.git
 WORKDIR covid-tracker
 
 # Setup cronjob to download COVID-19 data from NYTimes' repo every day
+RUN service cron start
 RUN (crontab -l ; echo "0 5 * * * /usr/bin/wget https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv -O /covid-tracker/data/us-counties.csv") | crontab
 
 # Download packages (workaround for build memory issues) and run app
